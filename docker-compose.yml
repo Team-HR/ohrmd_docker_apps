@@ -1,0 +1,53 @@
+version: '3.1'
+
+services:
+  httpd:
+    # image: php-fpm
+    build: ./webserver
+    ports:
+      - 8081:80
+    volumes:
+      - ./html:/var/www/html/
+    # depends_on:
+    #   - db
+    networks:
+      - back-tier
+
+  db:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    secrets:
+      - db_root_password
+    networks:
+      - back-tier
+    volumes:
+      - db-data:/var/lib/mysql
+      
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=0
+      - UPLOAD_LIMIT=100M
+    # depends_on:
+    #   - db
+    networks:
+      - back-tier
+
+  # /var/lib/mysql
+networks:
+  # The presence of these objects is sufficient to define them
+  # front-tier: {}
+  back-tier: {}
+
+volumes:
+  db-data:
+
+secrets:
+   db_root_password:
+     file: db_root_password.txt
