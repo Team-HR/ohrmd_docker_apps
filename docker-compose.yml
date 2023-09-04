@@ -3,11 +3,11 @@ version: '3.1'
 services:
   httpd:
     # image: php-fpm
-    build: ./webserver
+    build: ./images/php-apache
     ports:
       - 8081:80
     volumes:
-      - ./html:/var/www/html/
+      - ./htdocs:/var/www/html/
     # depends_on:
     #   - db
     networks:
@@ -16,7 +16,7 @@ services:
    # docker run -d --name php-apache --network apps-net -v C:\Users\fjavalencia\ohrmd_apps\html:/var/www/html/ -p 8081:80 ohrmd_apps-httpd:latest
    
   db:
-    image: nukefrazer/mariadb:latest
+    build: ./images/mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
