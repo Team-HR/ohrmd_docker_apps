@@ -12,9 +12,11 @@ services:
     #   - db
     networks:
       - back-tier
-
+   # docker network create apps-net
+   # docker run -d --name php-apache --network apps-net -v C:\Users\fjavalencia\ohrmd_apps\html:/var/www/html/ -p 8081:80 ohrmd_apps-httpd:latest
+   
   db:
-    image: mariadb:10.6
+    image: nukefrazer/mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
@@ -25,6 +27,8 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       
+      # docker network create apps-net
+      # docker run -d --name mariadb --network dev-net -e MARIADB_ROOT_PASSWORD=superhr2023 -v db-data:/var/lib/mysql mariadb:10.6
 
   phpmyadmin:
     image: phpmyadmin
@@ -38,6 +42,8 @@ services:
     #   - db
     networks:
       - back-tier
+
+    # docker run -d --name phpmyadmin --network apps-net -e PMA_ARBITRARY=1 -p 8080:80 phpmyadmin
 
   # /var/lib/mysql
 networks:
