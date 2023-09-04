@@ -1,13 +1,24 @@
 version: '3.1'
 
 services:
-  httpd:
+  httpd-ihris:
     # image: php-fpm
     build: ./images/php-apache
     ports:
       - 8081:80
     volumes:
-      - ./htdocs:/var/www/html/
+      - ./htdocs/ihris:/var/www/html/
+    # depends_on:
+    #   - db
+    networks:
+      - back-tier
+  httpd-pcr:
+    # image: php-fpm
+    build: ./images/php-apache
+    ports:
+      - 8082:80
+    volumes:
+      - ./htdocs/pcr:/var/www/html/
     # depends_on:
     #   - db
     networks:
