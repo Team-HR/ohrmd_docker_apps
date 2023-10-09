@@ -3,67 +3,92 @@ version: '3.1'
 services:
   httpd-ihris:
     # image: php-fpm
-    build: ./images/php-apache
-    ports:
-      - 8081:80
-    volumes:
-      - ./htdocs/ihris:/var/www/html/
-    # depends_on:
-    #   - db
-    networks:
-      - back-tier
-  httpd-pcr:
-    # image: php-fpm
-    build: ./images/php-apache
+    hostname: web-ihris-apache
+    build: 
+      context: .
+      dockerfile: ./images/php-apache/Dockerfile
+    image: web-ihris-apache:2
+    container_name: web-ihris-apache
     ports:
       - 8082:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
+    volumes:
+      - ./htdocs/ihris:/var/www/html/
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+  
+  
+  httpd-pcr:
+    # image: php-fpm
+    hostname: web-pcr-apache
+    build: 
+      context: .
+      dockerfile: ./images/php-apache/Dockerfile
+    image: web-pcr-apache:2
+    container_name: web-pcr-apache
+    ports:
+      - 8082:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
     volumes:
       - ./htdocs/pcr:/var/www/html/
-    # depends_on:
-    #   - db
-    networks:
-      - back-tier
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
    # docker network create apps-net
    # docker run -d --name php-apache --network apps-net -v C:\Users\fjavalencia\ohrmd_apps\html:/var/www/html/ -p 8081:80 ohrmd_apps-httpd:latest
    
   db:
-    build: ./images/mariadb
+    hostname: ohrmd-mariadb
+    image: mariadb:10.4-focal
+    container_name: ohrmd-mariadb
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
     secrets:
       - db_root_password
     networks:
-      - back-tier
+      - backend
     volumes:
-      - db-data:/var/lib/mysql
+      - dbdata:/var/lib/mysql
       
       # docker network create apps-net
       # docker run -d --name mariadb --network dev-net -e MARIADB_ROOT_PASSWORD=superhr2023 -v db-data:/var/lib/mysql mariadb:10.6
 
   phpmyadmin:
-    image: phpmyadmin
+    hostname: ohrmd-phpmyadmin
+    container_name: ohrmd-phpmyadmin
+    image: phpmyadmin/phpmyadmin
     restart: always
     ports:
       - 8080:80
     environment:
-      - PMA_ARBITRARY=0
-      - UPLOAD_LIMIT=100M
-    # depends_on:
-    #   - db
+      PMA_ARBITRARY: 0
+      UPLOAD_LIMIT: 254M
+    links:
+      - db:db
+    depends_on:
+      - db
     networks:
-      - back-tier
+      - backend
+      - frontend
 
     # docker run -d --name phpmyadmin --network apps-net -e PMA_ARBITRARY=1 -p 8080:80 phpmyadmin
 
-  # /var/lib/mysql
 networks:
-  # The presence of these objects is sufficient to define them
-  # front-tier: {}
-  back-tier: {}
+  backend:
+  frontend:
 
 volumes:
-  db-data:
+  dbdata:
 
 secrets:
    db_root_password:

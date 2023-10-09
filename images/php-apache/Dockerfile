@@ -1,10 +1,15 @@
 FROM php:7.4-apache
-COPY ./config/servername.conf /etc/apache2/conf-available/servername.conf
-COPY ./config/php/php.ini $PHP_INI_DIR/conf.d/
-# RUN docker-php-source extract \
-RUN docker-php-ext-install mysqli bcmath\
-    && docker-php-ext-enable mysqli bcmath\
-    # && docker-php-source delete \
-    && a2enconf servername.conf \
-    && a2enmod rewrite \
-    && service apache2 restart
+RUN apt-get update -y
+
+RUN docker-php-ext-install pdo pdo_mysql mysqli bcmath
+
+RUN a2enmod rewrite
+
+# Add correct rights for www folder.
+RUN chown -R www-data:www-data /var/www/
+
+# Install and enable xdebug.
+# RUN pecl install xdebug && docker-php-ext-enable xdebug
+WORKDIR /var/www/html
+
+EXPOSE 80 443
