@@ -10,7 +10,7 @@ services:
     image: web-ihris-apache:2
     container_name: web-ihris-apache
     ports:
-      - 8082:80
+      - 8081:80
     networks:
       - backend
       - frontend
@@ -53,6 +53,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     secrets:
       - db_root_password
     networks:
