@@ -1,2 +1,4 @@
 FROM mariadb:10.4-focal
-COPY ./config/my.cnf /etc/mysql/conf.d/
+COPY ./images/mariadb/conf.d /etc/mysql/conf.d
+
+

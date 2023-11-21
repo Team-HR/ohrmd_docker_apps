@@ -1,10 +1,10 @@
-version: '3.1'
+version: "3.1"
 
 services:
   httpd-ihris:
     # image: php-fpm
     hostname: web-ihris-apache
-    build: 
+    build:
       context: .
       dockerfile: ./images/php-apache/Dockerfile
     image: web-ihris-apache:2
@@ -21,12 +21,11 @@ services:
       - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
       # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-  
-  
+
   httpd-pcr:
     # image: php-fpm
     hostname: web-pcr-apache
-    build: 
+    build:
       context: .
       dockerfile: ./images/php-apache/Dockerfile
     image: web-pcr-apache:2
@@ -43,12 +42,16 @@ services:
       - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
       # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-   # docker network create apps-net
-   # docker run -d --name php-apache --network apps-net -v C:\Users\fjavalencia\ohrmd_apps\html:/var/www/html/ -p 8081:80 ohrmd_apps-httpd:latest
-   
+    # docker network create apps-net
+    # docker run -d --name php-apache --network apps-net -v C:\Users\fjavalencia\ohrmd_apps\html:/var/www/html/ -p 8081:80 ohrmd_apps-httpd:latest
+
   db:
     hostname: ohrmd-mariadb
-    image: mariadb:10.4-focal
+    # image: mariadb:10.4-focal
+    build:
+      # context: .
+      dockerfile: ./images/mariadb/Dockerfile
+    image: ohrmd-mariadb-apache:10.4-focal
     container_name: ohrmd-mariadb
     restart: always
     environment:
@@ -60,7 +63,8 @@ services:
       - backend
     volumes:
       - dbdata:/var/lib/mysql
-      
+      # - ./images/mariadb/config/my.cnf:/etc/mysql/conf.d/my.cnf
+      # ./config/my.cnf /etc/mysql/conf.d/
       # docker network create apps-net
       # docker run -d --name mariadb --network dev-net -e MARIADB_ROOT_PASSWORD=superhr2023 -v db-data:/var/lib/mysql mariadb:10.6
 
@@ -92,5 +96,5 @@ volumes:
   dbdata:
 
 secrets:
-   db_root_password:
-     file: db_root_password.txt
+  db_root_password:
+    file: db_root_password.txt
