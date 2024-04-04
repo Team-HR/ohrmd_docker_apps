@@ -1,6 +1,48 @@
 version: "3.1"
 
 services:
+  httpd-devfrontend:
+    # image: php-fpm
+    hostname: devfrontend
+    build:
+      context: .
+      dockerfile: ./images/php-apache/Dockerfile
+    image: devfrontend-apache:2
+    container_name: devfrontend
+    ports:
+      - 8083:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
+    volumes:
+      - ./htdocs/devfrontend:/var/www/html/
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+
+  httpd-devbackend:
+    # image: php-fpm
+    hostname: devbackend
+    build:
+      context: .
+      dockerfile: ./images/php-apache/Dockerfile
+    image: devbackend-apache:2
+    container_name: devbackend
+    ports:
+      - 8084:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
+    volumes:
+      - ./htdocs/devbackend:/var/www/html/
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+
   httpd-ihris:
     # image: php-fpm
     hostname: web-ihris-apache
