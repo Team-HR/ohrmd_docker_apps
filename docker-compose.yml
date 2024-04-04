@@ -9,6 +9,7 @@ services:
       dockerfile: ./images/php-apache/Dockerfile
     image: devfrontend-apache:2
     container_name: devfrontend
+    restart: always
     ports:
       - 8083:80
     networks:
@@ -30,6 +31,7 @@ services:
       dockerfile: ./images/php-apache/Dockerfile
     image: devbackend-apache:2
     container_name: devbackend
+    restart: always
     ports:
       - 8084:80
     networks:
@@ -51,6 +53,7 @@ services:
       dockerfile: ./images/php-apache/Dockerfile
     image: web-ihris-apache:2
     container_name: web-ihris-apache
+    restart: always
     ports:
       - 8081:80
     networks:
@@ -72,6 +75,7 @@ services:
       dockerfile: ./images/php-apache/Dockerfile
     image: web-pcr-apache:2
     container_name: web-pcr-apache
+    restart: always
     ports:
       - 8082:80
     networks:
