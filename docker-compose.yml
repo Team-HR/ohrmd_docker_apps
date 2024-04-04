@@ -95,6 +95,8 @@ services:
       dockerfile: ./images/mariadb/Dockerfile
     image: ohrmd-mariadb-apache:10.4-focal
     container_name: ohrmd-mariadb
+    ports:
+      - 3306:3306
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
