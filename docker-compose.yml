@@ -119,7 +119,7 @@ services:
   phpmyadmin:
     hostname: ohrmd-phpmyadmin
     container_name: ohrmd-phpmyadmin
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin
     restart: always
     ports:
       - 8080:80
