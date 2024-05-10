@@ -77,7 +77,7 @@ services:
     container_name: web-id_card
     restart: always
     ports:
-      - 8085:80
+      - 9090:80
     networks:
       - backend
       - frontend
