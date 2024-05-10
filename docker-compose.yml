@@ -67,6 +67,29 @@ services:
       # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
 
+  httpd-id_card:
+    # image: php-fpm
+    hostname: web-id_card
+    build:
+      context: .
+      dockerfile: ./images/php-apache/Dockerfile
+    image: web-id_card:2
+    container_name: web-id_card
+    restart: always
+    ports:
+      - 8085:80
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - db
+    volumes:
+      - ./htdocs/id_card:/var/www/html/
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+
+
   httpd-pcr:
     # image: php-fpm
     hostname: web-pcr-apache
