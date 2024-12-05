@@ -2,22 +2,22 @@ version: "3.1"
 
 services:
   httpd-leave_app:
-    # image: php-fpm
-    hostname: leave_app
-    build:
-      context: .
-      dockerfile: ./images/php-apache/Dockerfile
-    image: leave_app:2
-    container_name: leave_app
-    restart: always
-    ports:
-       - 8085:80
-    networks:
+      # image: php-fpm
+      hostname: leave_app
+      build:
+        context: .
+        dockerfile: ./images/php-apache/Dockerfile
+      image: leave_app:2
+      container_name: leave_app
+     restart: always
+     ports:
+       - 8083:80
+     networks:
        - backend
        - frontend
-    depends_on:
+     depends_on:
        - db
-    volumes:
+     volumes:
        - ./htdocs/leave_app:/var/www/html/
        - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
        # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
