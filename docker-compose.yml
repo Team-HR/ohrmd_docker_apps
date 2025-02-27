@@ -1,5 +1,3 @@
-version: "3.1"
-
 services:
   httpd-leave_app:
     # image: php-fpm
@@ -194,7 +192,7 @@ services:
     container_name: "ihris-redis"
     image: "redis:alpine"
     ports:
-      - "6380:6379"
+      - 6379:6379
     volumes:
       - "ihris-redis:/data"
     networks:
