@@ -11,17 +11,17 @@ services:
     container_name: leave_app
     restart: always
     ports:
-       - 8085:80
+      - 8085:80
     networks:
-       - backend
-       - frontend
+      - backend
+      - frontend
     depends_on:
-       - db
+      - db
     volumes:
-       - ./htdocs/leave_app:/var/www/html/
-       - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
-       # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-       - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./htdocs/leave_app:/var/www/html/
+      - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
 
   httpd-devfrontend:
     # image: php-fpm
@@ -82,7 +82,12 @@ services:
       - backend
       - frontend
     depends_on:
-      - db
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_started
+    environment:
+      REDIS_HOST: redis
     volumes:
       - ./htdocs/ihris:/var/www/html/
       - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
@@ -111,7 +116,6 @@ services:
       # - ./.docker/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./images/php-apache/config/php/php.ini:/usr/local/etc/php/conf.d/php.ini
 
-
   httpd-pcr:
     # image: php-fpm
     hostname: web-pcr-apache
@@ -127,7 +131,12 @@ services:
       - backend
       - frontend
     depends_on:
-      - db
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_started
+    environment:
+      REDIS_HOST: redis
     volumes:
       - ./htdocs/pcr:/var/www/html/
       - ./images/php-apache/config/php/vhost.conf:/etc/apache2/sites-available/000-default.conf
@@ -181,12 +190,30 @@ services:
 
     # docker run -d --name phpmyadmin --network apps-net -e PMA_ARBITRARY=1 -p 8080:80 phpmyadmin
 
+  redis:
+    container_name: "ihris-redis"
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    volumes:
+      - "ihris-redis:/data"
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      retries: 3
+      timeout: 5s
 networks:
   backend:
   frontend:
 
 volumes:
   dbdata:
+  ihris-redis:
+    driver: local
 
 secrets:
   db_root_password:

@@ -8,6 +8,11 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
+
+# Install Redis extension
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
 RUN a2enmod rewrite
 
 # Add correct rights for www folder.
