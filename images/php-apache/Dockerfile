@@ -1,10 +1,8 @@
 FROM php:7.4-apache
 
-RUN apt-get update -y
-
-# Install PHP extensions
+# Install dependencies and PHP extensions in single layer
 RUN apt-get update \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
         libzip-dev \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -18,17 +16,13 @@ RUN apt-get update \
         bcmath \
         calendar \
         zip \
-        gd
-
-# Install Redis extension
-RUN pecl install redis \
-    && docker-php-ext-enable redis
-
-# Enable Apache rewrite module
-RUN a2enmod rewrite
-
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/
+        gd \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && a2enmod rewrite \
+    && chown -R www-data:www-data /var/www/ \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Optional: Install and enable xdebug
 # RUN pecl install xdebug && docker-php-ext-enable xdebug
