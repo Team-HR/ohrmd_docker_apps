@@ -171,7 +171,7 @@ services:
   phpmyadmin:
     hostname: ohrmd-phpmyadmin
     container_name: ohrmd-phpmyadmin
-    image: phpmyadmin
+    image: phpmyadmin:5.2.1
     restart: always
     ports:
       - 8080:80
@@ -190,7 +190,7 @@ services:
 
   redis:
     container_name: "ihris-redis"
-    image: "redis:alpine"
+    image: "redis:7.2-alpine"
     ports:
       - 6379:6379
     restart: always

@@ -1,0 +1,19 @@
+services:
+  image-backup:
+    image: alpine:latest
+    container_name: image-backup
+    volumes:
+      - ./backups:/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: |
+      sh -c "
+        apk add --no-cache docker-cli &&
+        mkdir -p /backups &&
+        docker pull php:7.4-apache || true &&
+        docker save phpmyadmin:5.2.1 -o /backups/phpmyadmin-5.2.1.tar &&
+        docker save redis:7.2-alpine -o /backups/redis-7.2-alpine.tar &&
+        docker save ohrmd-mariadb-apache:10.4-focal -o /backups/mariadb-10.4-focal.tar &&
+        docker save php:7.4-apache -o /backups/php-7.4-apache.tar &&
+        echo 'Backup completed successfully' &&
+        ls -la /backups/
+      "
